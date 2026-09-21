@@ -1,0 +1,200 @@
+---
+title: "Working with NOAA Significant Earthquake Data"
+author: "Amlan Mishra"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Working with NOAA Significant Earthquake Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(rEarthquake)
+```
+
+# Introduction
+
+The `rEarthquake` package provides tools for working with
+NOAA significant earthquake data.
+
+The package provides functions for:
+
+- cleaning earthquake data;
+- cleaning earthquake location names;
+- creating earthquake timelines;
+- adding labels to earthquake timelines;
+- mapping earthquake epicenters; and
+- creating informative HTML labels for map popups.
+
+# Cleaning earthquake data
+
+The NOAA significant earthquake dataset contains information
+about earthquake dates, locations, magnitudes, coordinates,
+deaths, and other characteristics.
+
+The `eq_clean_data()` function creates a `DATE` variable,
+converts latitude and longitude to numeric values, and cleans
+the earthquake location names.
+
+First, we read the NOAA data included with the package.
+
+```{r read-data}
+data <- readr::read_delim(
+  system.file(
+    "extdata",
+    "signif.txt",
+    package = "rEarthquake"
+  ),
+  delim = "\t",
+  show_col_types = FALSE
+)
+
+clean_data <- eq_clean_data(data)
+
+head(
+  clean_data[, c(
+    "DATE",
+    "LOCATION_NAME",
+    "LATITUDE",
+    "LONGITUDE",
+    "EQ_PRIMARY"
+  )]
+)
+```
+
+# Cleaning earthquake locations
+
+The `eq_location_clean()` function removes the country name
+and colon from `LOCATION_NAME` and converts the remaining
+location name to title case.
+
+For example:
+
+```{r location-clean}
+eq_location_clean(
+  "JORDAN: BAB-A-DARAA,AL-KARAK"
+)
+```
+
+# Visualizing earthquakes over time
+
+The `geom_timeline()` function creates a timeline of
+earthquakes.
+
+The x-axis represents the earthquake date and the y-axis
+can be used to create separate timelines for different
+countries.
+
+```{r timeline}
+timeline_data <- clean_data |>
+  dplyr::filter(
+    COUNTRY %in% c("USA", "JAPAN", "CHINA"),
+    !is.na(DATE)
+  )
+
+ggplot2::ggplot(timeline_data) +
+  geom_timeline(
+    ggplot2::aes(
+      x = DATE,
+      y = COUNTRY
+    )
+  )
+```
+
+# Adding earthquake labels
+
+The `geom_timeline_label()` function adds annotations to
+selected earthquakes.
+
+The `n_max` argument can be used to label only the largest
+earthquakes.
+
+```{r timeline-label}
+ggplot2::ggplot(timeline_data) +
+  geom_timeline(
+    ggplot2::aes(
+      x = DATE,
+      y = COUNTRY
+    )
+  ) +
+  geom_timeline_label(
+    ggplot2::aes(
+      x = DATE,
+      y = COUNTRY,
+      label = LOCATION_NAME
+    ),
+    n_max = 5
+  )
+```
+
+# Mapping earthquake epicenters
+
+The `eq_map()` function creates an interactive leaflet map
+of earthquake epicenters.
+
+The `annot_col` argument specifies the column that will be
+displayed in the popup.
+
+For example, we can select earthquakes in Mexico from the
+year 2000 onward.
+
+```{r mexico-data}
+mexico_data <- clean_data |>
+  dplyr::filter(
+    COUNTRY == "MEXICO",
+    !is.na(DATE),
+    lubridate::year(DATE) >= 2000
+  )
+```
+
+The following code creates the interactive map.
+
+```{r mexico-map, eval=FALSE}
+eq_map(
+  mexico_data,
+  annot_col = "DATE"
+)
+```
+
+# Creating informative map labels
+
+The `eq_create_label()` function creates HTML text containing
+the earthquake location, magnitude, and total number of deaths.
+
+Missing values are omitted from the corresponding label.
+
+```{r create-label}
+mexico_data$popup_text <- eq_create_label(
+  mexico_data
+)
+
+head(
+  mexico_data$popup_text,
+  5
+)
+```
+
+The generated HTML can then be supplied to `eq_map()` as
+the popup annotation.
+
+```{r labelled-map, eval=FALSE}
+eq_map(
+  mexico_data,
+  annot_col = "popup_text"
+)
+```
+
+# Conclusion
+
+The `rEarthquake` package provides a workflow for cleaning
+NOAA significant earthquake data and visualizing earthquake
+activity both over time and geographically.
+
+The package combines data-cleaning functions with custom
+`ggplot2` timeline geoms and interactive `leaflet` maps.

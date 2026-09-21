@@ -7,10 +7,18 @@ Description: Tools for cleaning NOAA significant earthquake data and creating ea
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
 Imports:
     dplyr,
     ggplot2,
     stringr,
     tidyr,
     leaflet
+Suggests:
+    knitr,
+    lubridate,
+    readr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.0

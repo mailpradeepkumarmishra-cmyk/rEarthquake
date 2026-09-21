@@ -1,3 +1,15 @@
+#' Clean NOAA significant earthquake data
+#'
+#' Creates a DATE variable from YEAR, MONTH, and DAY,
+#' converts latitude and longitude to numeric values,
+#' and cleans earthquake location names.
+#'
+#' @param data A data frame containing NOAA significant
+#'   earthquake data.
+#'
+#' @return A data frame containing the cleaned earthquake data.
+#'
+#' @export
 eq_clean_data <- function(data) {
   
   data <- tidyr::unite(
