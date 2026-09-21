@@ -11,5 +11,6 @@ Imports:
     dplyr,
     ggplot2,
     stringr,
-    tidyr
+    tidyr,
+    leaflet
 Config/roxygen2/version: 8.1.0
