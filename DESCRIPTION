@@ -4,7 +4,7 @@ Title: Tools for Working with NOAA Significant Earthquake Data
 Version: 0.1.0
 Authors@R: person("Amlan", "Mishra", email = "mail.pradeepkumarmishra@gmail.com", role = c("aut", "cre"))
 Description: Tools for cleaning NOAA significant earthquake data and creating earthquake timeline visualizations.
-License: GPL-3
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr

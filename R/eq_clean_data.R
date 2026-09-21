@@ -9,6 +9,20 @@
 #'
 #' @return A data frame containing the cleaned earthquake data.
 #'
+#' @examples
+#' data <- readr::read_delim(
+#'   system.file(
+#'     "extdata",
+#'     "signif.txt",
+#'     package = "rEarthquake"
+#'   ),
+#'   delim = "\t",
+#'   show_col_types = FALSE
+#' )
+#'
+#' clean_data <- eq_clean_data(data)
+#' head(clean_data$DATE)
+#'
 #' @export
 eq_clean_data <- function(data) {
   

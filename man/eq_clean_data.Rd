@@ -18,3 +18,18 @@ Creates a DATE variable from YEAR, MONTH, and DAY,
 converts latitude and longitude to numeric values,
 and cleans earthquake location names.
 }
+\examples{
+data <- readr::read_delim(
+  system.file(
+    "extdata",
+    "signif.txt",
+    package = "rEarthquake"
+  ),
+  delim = "\t",
+  show_col_types = FALSE
+)
+
+clean_data <- eq_clean_data(data)
+head(clean_data$DATE)
+
+}
