@@ -127,3 +127,5 @@ devtools::check()
 ## Author
 
 Pradeep Mishra
+
+<!-- Travis CI build trigger -->
